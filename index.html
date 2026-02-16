@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scryfall Search</title>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+  <main class="max-w-xl mx-auto pt-16 px-4 font-sans">
+    <h1 class="text-3xl font-bold text-center text-blue-700">Scryfall Search</h1>
+
+    <!-- Input di ricerca -->
+    <input 
+      id="search"
+      type="text"
+      placeholder="Cerca una carta..."
+      class="w-full mt-8 p-3 rounded-lg border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+
+    <!-- Risultati -->
+    <div id="results" class="mt-6 grid gap-4"></div>
+  </main>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
