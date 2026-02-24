@@ -1,0 +1,56 @@
+STEP 9 — UI del deck
+mostrare il deck in una sidebar o sezione dedicata
+
+raggruppare per categorie usando categorizeCard
+
+mostrare count, immagine, nome
+
+pulsanti + e – per aggiungere/rimuovere
+
+🔜 STEP 10 — Persistenza
+salvare il deck in localStorage
+
+caricarlo all’avvio
+
+evitare perdita di dati
+
+🔜 STEP 11 — Statistiche
+totale carte
+
+numero di creature / terre / instant-sorcery / altro
+
+validazione in tempo reale (>= 60 carte)
+
+🔜 STEP 12 — UX migliorata
+highlight quando raggiungi 4 copie
+
+messaggio se provi ad aggiungere la 5ª copia
+
+animazioni leggere
+
+🔜 STEP 13 — Esportazione
+esportare il deck in formato testo
+
+esportazione stile MTG Arena / MTGO
+
+counter.ts
+main.ts
+style.css
+typescript.svg
+
+api/
+  scryfall.ts
+
+ui/
+  renderCard.ts
+
+utils/
+  debounce.ts
+  faces.ts
+  mana.ts
+  categorizeCard.ts   ← aggiunto
+
+deck/
+  deckTypes.ts        ← tipi del deck
+  deckManager.ts      ← logica del deck
+  deckRules.ts        ← regole (terre base, validazione)
