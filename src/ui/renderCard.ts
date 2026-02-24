@@ -29,7 +29,15 @@ export function renderCards(data: any, container: HTMLElement) {
         })
         .join("");
 
-      return `<div class="bg-blue-300 rounded-lg p-3 shadow max-w-2xl mx-auto mb-4">${facesHtml}</div>`;
+      return `
+  <div 
+    class="card-result bg-blue-300 rounded-lg p-3 shadow max-w-2xl mx-auto mb-4 cursor-pointer"
+    data-card='${JSON.stringify(card)}'
+  >
+    ${facesHtml}
+  </div>
+`;
+
     })
     .join("");
 }
