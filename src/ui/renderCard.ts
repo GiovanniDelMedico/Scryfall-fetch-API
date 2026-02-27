@@ -1,18 +1,22 @@
+import type { ScryfallCard, ScryfallCardFace } from "../types/scryfallTypes";
 import { getCardFaces } from "../utils/faces";
 import { renderManaCost } from "../utils/mana";
 
-export function renderCards(data: any, container: HTMLElement) {
+export function renderCards(
+  data: { data: ScryfallCard[] },
+  container: HTMLElement,
+) {
   if (!data || !data.data || data.data.length === 0) {
     container.innerHTML = `<p class="text-center text-gray-600 mt-4">Nessuna carta trovata</p>`;
     return;
   }
 
   container.innerHTML = data.data
-    .map((card: any) => {
-      const faces = getCardFaces(card);
+    .map((card: ScryfallCard) => {
+      const faces: ScryfallCardFace[] = getCardFaces(card);
 
       const facesHtml = faces
-        .map((face: any) => {
+        .map((face) => {
           const img = face.image_uris?.normal;
 
           return `
@@ -31,13 +35,20 @@ export function renderCards(data: any, container: HTMLElement) {
 
       return `
   <div 
-    class="card-result bg-blue-300 rounded-lg p-3 shadow max-w-2xl mx-auto mb-4 cursor-pointer"
-    data-card='${JSON.stringify(card)}'
-  >
-    ${facesHtml}
-  </div>
-`;
+  class="card-result bg-blue-300 rounded-lg p-3 shadow max-w-2xl mx-auto mb-4"
+  data-card-id='${card.id}'
+>
+  ${facesHtml}
 
+  <div class="flex gap-2 mt-2">
+    <button class="add-main bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded">
+      + Main
+    </button>
+    <button class="add-side bg-purple-600 hover:bg-purple-700 text-white px-3 py-1 rounded">
+      + Side
+    </button>
+  </div>
+</div>`;
     })
     .join("");
 }

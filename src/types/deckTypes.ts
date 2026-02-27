@@ -7,5 +7,6 @@ export type DeckCard = {
 };
 
 export type Deck = {
-  cards: DeckCard[];
+  main: DeckCard[];
+  side: DeckCard[];
 };

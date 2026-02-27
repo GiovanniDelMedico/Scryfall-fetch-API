@@ -1,10 +1,17 @@
 import "./style.css";
 
-import { searchCards } from "./api/scryfall";
+import type { ScryfallCard, ScryfallSearchResponse } from "./types/scryfallTypes";
+import { searchCards } from "./api/scryfallApi";
 import { renderCards } from "./ui/renderCard";
 import { debounce } from "./utils/debounce";
 import { renderDeck } from "./ui/renderDeck";
 import { addCard } from "./deck/deckManager";
+import { getMain,getSide } from "./deck/deckManager";
+import { removeCard } from "./deck/deckManager";
+import { moveCard } from "./deck/deckManager";
+
+
+const cardCache = new Map<string, ScryfallCard>();
 
 const input = document.querySelector("#search") as HTMLInputElement;
 const results = document.querySelector("#results") as HTMLElement;
@@ -20,7 +27,12 @@ const handleSearch = debounce(async () => {
   }
 
   // Chiamata API
-  const data = await searchCards(query);
+  const data: ScryfallSearchResponse = await searchCards(query);
+  if(data?.data){
+    data.data.forEach((card:ScryfallCard)=>{
+      cardCache.set(card.id,card);
+    });
+  }
 
   // Render dei risultati (gestisce anche "nessuna carta trovata")
   renderCards(data, results);
@@ -31,13 +43,16 @@ input.addEventListener("input", handleSearch);
 
 // Event delegation sui risultati: click su una carta → aggiungi al deck
 results.addEventListener("click", (e) => {
-  const target = (e.target as HTMLElement).closest(".card-result");
-  if (!target) return;
+  const target = e.target as HTMLElement;
 
-  const raw = target.getAttribute("data-card");
-  if (!raw) return;
+  const cardDiv = target.closest(".card-result") as HTMLElement;
+  if (!cardDiv) return;
 
-  const card = JSON.parse(raw);
+  const id = cardDiv.getAttribute("data-card-id");
+  if (!id) return;
+
+  const card = cardCache.get(id);
+  if (!card) return;
 
   const deckCard = {
     id: card.id,
@@ -47,9 +62,52 @@ results.addEventListener("click", (e) => {
     count: 1,
   };
 
-  addCard(deckCard);
-  renderDeck();
+  if (target.classList.contains("add-main")) {
+    addCard(deckCard, "main");
+    renderDeck();
+  }
+
+  if (target.classList.contains("add-side")) {
+    addCard(deckCard, "side");
+    renderDeck();
+  }
 });
+
+document.addEventListener("click", (e) => {
+  const target = e.target as HTMLElement;
+
+  // + copia
+  if (target.classList.contains("btn-inc")) {
+    const id = target.dataset.id!;
+    const dest = target.dataset.dest as "main" | "side";
+
+    const card = (dest === "main" ? getMain() : getSide()).find(c => c.id === id);
+    if (!card) return;
+
+    addCard(card, dest);
+    renderDeck();
+  }
+
+  // - copia
+  if (target.classList.contains("btn-dec")) {
+    const id = target.dataset.id!;
+    const dest = target.dataset.dest as "main" | "side";
+
+    removeCard(id, dest);
+    renderDeck();
+  }
+
+  // move main <-> side
+  if (target.classList.contains("btn-move")) {
+    const id = target.dataset.id!;
+    const from = target.dataset.from as "main" | "side";
+    const to = target.dataset.to as "main" | "side";
+
+    moveCard(id, from, to);
+    renderDeck();
+  }
+});
+
 
 // Render iniziale del deck (vuoto)
 renderDeck();
